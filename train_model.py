@@ -10,7 +10,11 @@ from sklearn.metrics import accuracy_score, classification_report
 
 
 # <<1>> Load the data
-df = pd.read_csv("data/cleaned_credit_data.csv", index_col = 0)
+df = pd.read_csv("data/cleaned_credit_data.csv")
+
+# DEBUG CHECK
+print("--- TRAINING CHECK ---")
+print(f"Features being used: {df.drop('Risk_good', axis=1).columns.tolist()}")
 
 # <<2>> Separate the Features (x) from the Target (y)
 # 'Risk' is what we want to predict (1 = Good, 2 = Bad in this dataset)

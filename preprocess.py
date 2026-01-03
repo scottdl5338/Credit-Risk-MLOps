@@ -59,8 +59,15 @@ print(df.head())
 
 
 # <<6>> Save the cleaned data for Day 3 (Modeling)
-df.to_csv('data/cleaned_credit_data.csv', index=True)
+df.to_csv('data/cleaned_credit_data.csv', index=False)
 print("\nCleaned data saved to data/cleaned_credit_data.csv")
 
 print("\n--- DATA INFO ---\n")
 df.info()
+
+# <<7>> Optional Debug
+check_df = pd.read_csv('data/cleaned_credit_data.csv')
+print("--- PREPROCESS CHECK ---")
+print(f"Columns found: {check_df.columns.tolist()}")
+if 'Unnamed: 0' in check_df.columns:
+    print("ALERT: Unnamed column still exists!")
