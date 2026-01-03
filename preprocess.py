@@ -7,6 +7,7 @@ df = pd.read_csv('data/german_credit_data.csv')
 
 # <<2>>. Handle Missing (Nan) Values
 # We fill NaN with 'unknown' because 'missing' is a risk signal in banking
+# AkA imputation other common strategies are KNN and MICE
 
 print("--- BEFORE FILLING ---")
 print("Missing values in Saving accounts:", df['Saving accounts'].isnull().sum())
@@ -46,9 +47,9 @@ print(df.head())
 # Ex. Sex: Male = 0 Female = 1 Non-binary = 2 Trans = 3
 
 # .get_dummies - This creates new columns for each category (e.g., Purpose_car, Purpose_radio)
-# drop_first = True - Removes first column since if all other columns are False the process of elminination the only thing left must be True 
+# drop_first = True - Removes first column since if all other columns are False the process of elminination the only thing left must be True avoids Multicollinearity
 # Always use for linear or small/effiecnt models
-df = pd.get_dummies(df, columns=['Purpose', 'Saving accounts', 'Checking account'], drop_first=True)
+df = pd.get_dummies(df, columns=['Purpose', 'Saving accounts', 'Checking account','Risk'], drop_first=True)
 
 
 # <<5>> Result
@@ -60,3 +61,6 @@ print(df.head())
 # <<6>> Save the cleaned data for Day 3 (Modeling)
 df.to_csv('data/cleaned_credit_data.csv', index=True)
 print("\nCleaned data saved to data/cleaned_credit_data.csv")
+
+print("\n--- DATA INFO ---\n")
+df.info()
