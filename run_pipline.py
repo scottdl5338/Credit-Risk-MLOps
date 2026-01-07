@@ -29,3 +29,4 @@ def run_script(script_name):
 run_script('preprocess.py')
 run_script('train_model.py')
 run_script('predict.py')
+run_script('visualize.py')

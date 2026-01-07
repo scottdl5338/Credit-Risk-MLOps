@@ -19,10 +19,10 @@ for col in sample_customer.columns:
     sample_customer[col] = 0
 
 # 4. Fill in the specific data for our "Banker Interview"
-sample_customer['Age'] = 49
+sample_customer['Age'] = 20
 sample_customer['Credit amount'] = 2096
 sample_customer['Duration'] = 12
-sample_customer['Sex'] = 1 # Male
+sample_customer['Sex'] = 0 # Male
 # Set one 'Purpose' to 1 (e.g., Purpose_car if it exists in your columns)
 if 'Purpose_car' in sample_customer.columns:
     sample_customer['Purpose_education'] = 1
