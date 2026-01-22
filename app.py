@@ -7,7 +7,7 @@ import pandas as pd
 model = joblib.load('credit_model.pkl')
 
 # 2. Initialize the App
-app = FastAPI(title="IVC Credit Risk Service")
+app = FastAPI(title="Credit Risk Service")
 
 # 3. Define what the user sends us (The Waiter's Notepad)
 class Borrower(BaseModel):
@@ -38,29 +38,40 @@ def home():
 
 @app.post("/predict")
 def predict_risk(data: Borrower):
-    # 1. Convert the validated data into a DataFrame
-    # Note: .model_dump() is the modern version of .dict()
+    # 1. Convert and Align Features (The magic you did earlier)
     input_df = pd.DataFrame([data.model_dump()])
-
-    # 2. Rename 'Credit_amount' to 'Credit amount' (with a space) to match the model
     input_df = input_df.rename(columns={'Credit_amount': 'Credit amount'})
-
-    # 3. The "Magic" Step: Get the exact list of columns the model expects
     model_features = model.feature_names_in_
-
-    # 4. Reindex: This automatically adds missing columns as 0 
-    # and puts them in the EXACT order the model was trained on.
     input_df = input_df.reindex(columns=model_features, fill_value=0)
 
-    # 5. Prediction logic
+    # 2. Get the Prediction
     prediction = model.predict(input_df)
     probability = model.predict_proba(input_df)
+    
+    # 3. Get Feature Importance (The Explainability part)
+    # We map the feature names to their importance scores
+    importances = dict(zip(model_features, model.feature_importances_))
+    
+    # Sort them to find the "Top 3" drivers of this model
+    top_drivers = sorted(importances.items(), key=lambda x: x[1], reverse=True)[:3]
+    explanation = {feature: f"{round(float(score) * 100, 2)}%" for feature, score in top_drivers}
 
     status = "Good" if prediction[0] == 1 else "Bad"
     confidence = float(probability[0][prediction[0]])
 
     return {
-        "prediction": status,
+        "decision": status,
         "confidence": f"{confidence*100:.2f}%",
-        "internship_demo": "Summer 2026 Candidate"
+        "top_decision_drivers": explanation,
+        "note": "This identifies which factors most influenced the model globally."
     }
+#How Decorators Work in FastAPHow Decorators Work in FastAPI
+# In your credit risk project, the decorators act as address labels for your web server.
+
+# The @ Symbol: Tells Python, "I am applying a special rule to the function immediately below this."
+
+# The app part: Refers to the FastAPI instance you created at the top of your script (app = FastAPI()).
+
+# The .get or .post part: This defines the "Action." It tells the server to listen for a specific type of internet request.
+
+# The ("/") or ("/predict") part: This defines the "Path." It’s the specific URL extension the user must visit to trigger that function.
